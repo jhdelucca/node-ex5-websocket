@@ -1,0 +1,49 @@
+<h1>Hello world!</h1>
+
+<ul id="messages"></ul>
+
+<form id="comment-form">
+    <label for="author">Autor</label><br>
+    <input type="text" id="author" /><br>
+    <label for="comment">Mensagem</label><br>
+    <textarea id="comment"></textarea><br>
+    <button type="submit">Enviar</button>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+
+    const socket = io('http://localhost:3000');
+
+    //Elemento do formulario
+    const messageForm = document.getElementById('comment-form');
+
+    //Implementação do eventoSubmit
+    messageForm.onsubmit = function (event) {
+        //previne o recarregamento da pagina ao submeter o formulario
+        event.preventDefault()
+
+        const author = document.getElementById('author').value
+        const comment = document.getElementById('comment').value
+        const data = { author, comment }
+
+        //chamada da mensagem renderizada em lista
+        renderMessage(data);
+        // Envia uma mensagem ao servidor com os dados recuperados
+        socket.emit('sendMessage', data)
+    }
+
+    socket.on('mensagemRecebida' , (conteudo) => {
+        renderMessage(conteudo);
+    });
+
+    const messageList = document.getElementById('messages')
+    const renderMessage = (message) => {
+        const element = document.createElement('li')
+        element.innerHTML = `<strong> ${message.author}</strong> : ${message.comment}`
+        messageList.append(element);
+
+    }
+
+
+</script>
