@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 io.on('connection' , (socket) => {
   socket.on('sendMessage' , conteudo => {
     socket.broadcast.emit('mensagemRecebida' , conteudo);
+    //socket.emit('sendMessage' , conteudo);
   })
 })
 
